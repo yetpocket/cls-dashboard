@@ -31,7 +31,7 @@ class Store {
     protected saveDisconnection = false
 
     appendToSet (connections: API.Connections[]) {
-        const mapping = connections.reduce(
+        const mapping = (connections || []).reduce(
             (map, c) => map.set(c.id, c), new Map<string, API.Connections>(),
         )
 
