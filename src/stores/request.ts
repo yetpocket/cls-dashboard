@@ -21,14 +21,17 @@ const clashxConfigAtom = atom(async () => {
 })
 
 function getControllerFromLocation (): string | null {
-    if (!isIP(location.hostname)) {
+    let h = location.hostname
+    if (!isIP(location.hostname) && h !== "localhost") {
         return null
     }
-
+    if (h === "localhost") {
+        h = "127.0.0.1"
+    }
     if (location.port !== '') {
         return JSON.stringify([
             {
-                hostname: location.hostname,
+                hostname: h,
                 port: +location.port,
                 secret: '',
             },
@@ -38,7 +41,7 @@ function getControllerFromLocation (): string | null {
     const port = location.protocol === 'https:' ? 443 : 80
     return JSON.stringify([
         {
-            hostname: location.hostname,
+            hostname: h,
             port,
             secret: '',
         },
@@ -48,7 +51,7 @@ function getControllerFromLocation (): string | null {
 // jotai v2 use initialValue first avoid hydration warning, but we don't want that
 const hostsStorageOrigin = localStorage.getItem('externalControllers') ??
     getControllerFromLocation() ??
-    '[{ "hostname": "127.0.0.1", "port": 7890, "secret": "" }]'
+    '[{ "hostname": "127.0.0.1", "port": 9000, "secret": "" }]'
 const hostSelectIdxStorageOrigin = localStorage.getItem('externalControllerIndex') ?? '0'
 
 export const hostsStorageAtom = atomWithStorage<Array<{
