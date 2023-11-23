@@ -1,4 +1,4 @@
-name: Deploy
+name: Build
 
 on: [push]
 
@@ -20,11 +20,16 @@ jobs:
       run: |
         pnpm install --frozen-lockfile
         pnpm build
-    - name: Deploy
-      uses: crazy-max/ghaction-github-pages@v3
+        tar zcvf dist.tar.gz dist
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
-        target_branch: gh-pages
-        build_dir: dist
-        fqdn: clash.razord.top
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        body: x86-64
+        # note you'll typically need to create a personal access token
+        # with permissions to create releases in the other repo
+        token: ${{ secrets.GITHUB_TOKEN }}
+        repository: ${{ github.repository }}
+        name: public
+        tag_name: master
+        files: |
+          ./dist.tar.gz
