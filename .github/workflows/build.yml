@@ -20,7 +20,7 @@ jobs:
       run: |
         pnpm install --frozen-lockfile
         pnpm build
-        tar zcvf dist.tar.gz dist
+        tar cvzf dist.tar.gz -C dist/ .
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
